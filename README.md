@@ -1,1 +1,5 @@
-# sportify
+- Website: [Lins Official](https://linsofc.github.io)
+- Sportify: [Sportify](https://linsofc.github.io/sportify)
+- GitHub: [Linsofc](https://github.com/Linsofc)
+- WhatsApp: [Chat WhatsApp](https://wa.me/6285190090045)
+- Instagram: [rijalsavior](https://instagram.com/rijalsavior)
