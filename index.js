@@ -103,16 +103,7 @@ function addChatMessage(message, sender) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("flex", "items-start", "mb-4");
   const avatar = document.createElement("div");
-  avatar.classList.add(
-    "w-8",
-    "h-8",
-    "rounded-full",
-    "bg-gray-300",
-    "flex",
-    "items-center",
-    "justify-center",
-    "mr-2"
-  );
+  avatar.classList.add("avatar", "bg-gray-300", "mr-2");
   avatar.textContent = sender === "user" ? "U" : "AI";
   const messageContent = document.createElement("div");
   messageContent.classList.add(
@@ -229,16 +220,29 @@ function openPreview(song) {
 
   const audioContainer = document.getElementById("previewAudioContainer");
   audioContainer.innerHTML = `
-        <audio controls class="w-full mb-4">
-        <source src="https://spotifydl.nvlgroup.my.id/download?url=${song.url}" type="audio/mp3">
-        Your browser does not support the audio element.
+        <audio id="audioPlayer" controls autoplay class="w-full mb-4">
+            <source src="https://spotifydl.nvlgroup.my.id/download?url=${song.url}" type="audio/mp3">
+            Your browser does not support the audio element.
         </audio>
-        `;
-  document.title = `${song.title} - ${song.artist} • Linsofficial`;
+  `;
+
+  const audioPlayer = document.getElementById("audioPlayer");
+  audioPlayer.addEventListener("ended", playNextSong);
 
   document.getElementById(
     "previewDownload"
   ).href = `https://spotifyapi.caliphdev.com/api/download/track?url=${song.url}`;
+}
+
+function playNextSong() {
+  const currentIndex = favoriteSongs.findIndex(
+    (song) => song.url === currentSong.url
+  );
+  if (currentIndex !== -1 && currentIndex + 1 < favoriteSongs.length) {
+    openPreview(favoriteSongs[currentIndex + 1]);
+  } else {
+    console.log("Tidak ada lagu berikutnya.");
+  }
 }
 
 function closePreview() {
