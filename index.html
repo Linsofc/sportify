@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Spotify - Linsofc: Temukan dan dengarkan lagu favorit Anda dengan mudah."
+    />
+    <meta
+      name="keywords"
+      content="Spotify, musik, lagu, streaming, Linsofc, Chat Bot AI"
+    />
+    <meta name="author" content="Linsofc" />
+
+    <title>Spotify - Linsofc</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body class="bg-gray-200">
+    <!-- Captcha Modal -->
+    <div
+      id="captchaModal"
+      class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
+    >
+      <div
+        class="bg-white p-8 rounded-lg relative w-full max-w-sm dark:bg-gray-700"
+      >
+        <h3 class="text-lg font-bold mb-4">Verifikasi Captcha</h3>
+        <div class="flex items-center justify-center mb-4">
+          <canvas
+            id="captchaCanvas"
+            width="200"
+            height="50"
+            class="border"
+          ></canvas>
+          <button
+            onclick="generateCaptcha()"
+            class="ml-4 text-blue-500 hover:underline"
+          >
+            Reset
+          </button>
+        </div>
+        <input
+          type="text"
+          id="captchaInput"
+          placeholder="Masukkan Kode Captcha"
+          class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white input-effect mb-4"
+        />
+        <button
+          onclick="validateCaptcha()"
+          class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+        >
+          Check
+        </button>
+      </div>
+    </div>
+
+    <div id="container" class="hidden">
+      <div class="container mx-auto py-10">
+        <div class="p-8">
+          <div class="flex justify-between items-center mb-6">
+            <h1
+              class="text-3xl sm:text-2xl xs:text-xl font-bold text-center flex items-center justify-center"
+            >
+              <img
+                src="sportify.png"
+                alt="Spotify"
+                class="w-8 h-8 mr-2"
+                ,
+                style="border-radius: 50%"
+              />
+              Spotify - Linsofc
+            </h1>
+            <div class="flex items-center space-x-4">
+              <button id="themeToggle" class="text-2xl focus:outline-none">
+                <i id="themeIcon" class="fas fa-moon"></i>
+              </button>
+              <button id="chatToggle" class="text-2xl focus:outline-none">
+                <i class="fas fa-comments"></i>
+              </button>
+            </div>
+          </div>
+          <div class="relative grid grid-cols-12 gap-4 mx-auto max-w-md">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Cari Lagu ..."
+              class="col-span-9 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white input-effect"
+            />
+            <button
+              onclick="search()"
+              class="col-span-3 bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div id="loader" class="hidden flex items-center justify-center mt-5">
+            <div
+              class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"
+            ></div>
+          </div>
+          <div id="results" class="mt-5"></div>
+          <h2 class="text-2xl font-bold mt-10">Lagu Favorite</h2>
+          <div id="favorites" class="mt-5"></div>
+          <div id="pagination" class="flex justify-center mt-5"></div>
+        </div>
+      </div>
+
+      <!-- Preview Modal -->
+      <div
+        id="previewModal"
+        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden"
+      >
+        <div class="container mx-auto h-full flex items-center justify-center">
+          <div
+            class="bg-white p-8 rounded-lg relative w-full max-w-lg dark:bg-gray-700"
+          >
+            <img
+              id="previewThumbnail"
+              src=""
+              alt="Thumbnail"
+              class="w-32 h-32 mb-4"
+            />
+            <h3 id="previewTitle" class="text-lg font-bold mb-2"></h3>
+            <p id="previewArtist" class="text-gray-700 mb-2"></p>
+            <p id="previewAlbum" class="text-gray-700 mb-4"></p>
+            <div id="previewAudioContainer"></div>
+            <a
+              id="previewDownload"
+              href=""
+              download
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 mr-2"
+            >
+              <i class="fas fa-download"></i>
+            </a>
+            <button
+              onclick="saveToFavorites()"
+              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <i class="fas fa-save"></i>
+            </button>
+            <button
+              onclick="closePreview()"
+              class="absolute top-0 right-0 mt-4 mr-4 text-gray-700 px-2 py-2 rounded-full focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Modal -->
+      <div
+        id="chatModal"
+        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden"
+      >
+        <div
+          class="container mx-auto h-full flex items-center justify-center px-4"
+        >
+          <div
+            class="bg-white p-8 rounded-lg relative w-full max-w-lg md:max-w-md sm:max-w-sm dark:bg-gray-700"
+          >
+            <h3 class="text-lg font-bold mb-4">Linsofc - Chat</h3>
+            <div id="chatContainer" class="mb-4 max-h-96 overflow-y-auto"></div>
+            <div class="flex items-center space-x-2">
+              <input
+                type="text"
+                id="chatInput"
+                placeholder="Tanyakan Sesuatu ..."
+                class="flex-1 border border-gray-300 px-2 py-1 rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white text-sm sm:text-base sm:px-3 sm:py-2"
+              />
+              <button
+                id="sendButton"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 text-sm sm:px-3 sm:py-1"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </button>
+              <button
+                id="clearButton"
+                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300 text-sm sm:px-3 sm:py-1"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <button
+              onclick="closeChat()"
+              class="absolute top-0 right-0 mt-4 mr-4 text-gray-700 px-2 py-2 rounded-full focus:outline-none focus:ring focus:border-blue-300"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <script src="index.js" defer></script>
+    </div>
+  </body>
+</html>
