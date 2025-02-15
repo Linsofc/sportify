@@ -20,17 +20,12 @@
 }
 
 .theme-dark button {
-  background-color: #334155;
   color: #e2e8f0;
-  padding: 10px 15px;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 .theme-dark button:hover {
-  background-color: #6366f1;
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.5);
 }
 
 .input-effect {
@@ -39,6 +34,14 @@
 .input-effect:focus {
   transform: scale(1.05);
   border-color: #6366f1;
+}
+
+.theme-dark #previewModal h3 {
+  color: #121826 !important;
+}
+
+.theme-dark #previewModal button {
+  color: #121826 !important;
 }
 
 .theme-dark .card {
@@ -97,8 +100,8 @@
 .theme-dark #favorites button {
   background: #475569;
   color: #ffffff;
-  padding: 8px;
-  border-radius: 8px;
+  /* padding: 8px; */
+  /* border-radius: 8px; */
   transition: all 0.3s ease;
 }
 
